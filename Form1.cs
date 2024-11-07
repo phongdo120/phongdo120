@@ -1,50 +1,29 @@
-﻿using static System.Formats.Asn1.AsnWriter;
+using System.Data.SqlClient;
+using System.Data;
+using System.Windows.Forms;
 
-namespace TracuuSV
+namespace FormSIMTHE
 {
     public partial class Form1 : Form
     {
-        private Dictionary<string, double> studentScores = new Dictionary<string, double>
-        {
-            { "SV001", 8.5 },
-            { "SV002", 7.8 },
-            { "SV003", 9.2 },
-            { "SV004", 6.5 }
-        };
         public Form1()
         {
             InitializeComponent();
+            LoadData(); 
         }
-
-        private void btnTracuu_click(object sender, EventArgs e)
+        private void LoadData()
         {
-            string studentID = txtMasinhvien.Text.Trim();
+            string connectionString = "Server=PHONG-DO;Database=QLST;Trusted_Connection=True;";
+            string query = "SELECT * FROM Sim ORDER BY NgayKichHoat ASC";
 
-            // Kiểm tra mã sinh viên có trong danh sách hay không
-            if (studentScores.ContainsKey(studentID))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                double score = studentScores[studentID];
-                MessageBox.Show($"Mã sinh viên {studentID}, {score}" , "Thông báo");
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(query, connection);
+                DataTable dataTable = new DataTable();
+                dataAdapter.Fill(dataTable);
+
+                dataGridView1.DataSource = dataTable;
             }
-            else
-            {
-                MessageBox.Show("Mã sinh viên không tồn tại!" , "Thông báo");
-            }
-        }
-
-        private void btnExit_click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void txtMasinhvien_click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnMasinhvien_click(object sender, EventArgs e)
-        {
-
         }
     }
 }
